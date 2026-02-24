@@ -1,0 +1,5 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Dashboard"
+- assertVisible: "Open record upload"

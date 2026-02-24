@@ -1,0 +1,49 @@
+{
+  "name": "fit-hub-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "lint": "expo lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "build": "expo export --platform ios --platform android --output-dir dist"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@kingstinct/react-native-healthkit": "13.2.1",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@sentry/react-native": "~7.2.0",
+    "@supabase/supabase-js": "2.95.3",
+    "@tanstack/query-async-storage-persister": "^5.90.22",
+    "@tanstack/react-query": "5.90.21",
+    "@tanstack/react-query-persist-client": "^5.90.22",
+    "expo": "~54.0.33",
+    "expo-health-connect": "0.1.1",
+    "expo-image-manipulator": "~14.0.8",
+    "expo-image-picker": "~17.0.10",
+    "expo-notifications": "~0.32.16",
+    "expo-router": "6.0.23",
+    "expo-secure-store": "~15.0.8",
+    "expo-status-bar": "~3.0.8",
+    "react": "19.1.0",
+    "react-hook-form": "7.71.1",
+    "react-native": "0.81.5",
+    "react-native-health-connect": "3.5.0",
+    "react-native-url-polyfill": "^3.0.0",
+    "zod": "4.3.6",
+    "zustand": "5.0.10"
+  },
+  "devDependencies": {
+    "@types/react": "~19.1.10",
+    "eslint": "^9.39.1",
+    "eslint-config-expo": "~10.0.0",
+    "typescript": "~5.9.2",
+    "vitest": "^2.1.8"
+  }
+}

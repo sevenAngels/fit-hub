@@ -1,0 +1,8 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Dashboard"
+- tapOn: "Open weekly report"
+- assertVisible: "Feedback & Weekly Report"
+- tapOn: "Back to dashboard"
+- assertVisible: "Open record upload"

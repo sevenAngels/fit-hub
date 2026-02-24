@@ -1,0 +1,8 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Dashboard"
+- tapOn: "Open record history"
+- assertVisible: "Record History"
+- tapOn: "Upload new record"
+- assertVisible: "Record Upload"

@@ -1,0 +1,39 @@
+{
+  "name": "fit-hub",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.19.4"
+  },
+  "scripts": {
+    "lint": "npm --prefix apps/mobile run lint",
+    "typecheck": "npm --prefix apps/mobile run typecheck",
+    "test": "npm --prefix apps/mobile run test",
+    "test:run": "npm --prefix apps/mobile run test:run",
+    "build": "npm --prefix apps/mobile run build",
+    "release:gates:health": "node scripts/release-gates-health.mjs",
+    "release:gates:health:error": "node scripts/release-gates-health.mjs --evidence .sisyphus/evidence/task-30-health-go-no-go-error.json",
+    "test:security:rls": "node scripts/rls-storage-smoke.mjs",
+    "test:security:rls:dry-run": "node scripts/rls-storage-smoke.mjs --dry-run",
+    "test:e2e:core": "node scripts/e2e-core-suite.mjs",
+    "test:e2e:core:dry-run": "node scripts/e2e-core-suite.mjs --dry-run",
+    "test:observability": "node scripts/observability-check.mjs",
+    "test:observability:dry-run": "node scripts/observability-check.mjs --dry-run",
+    "test:subscription:fallback": "node scripts/subscription-fallback-check.mjs",
+    "test:subscription:fallback:dry-run": "node scripts/subscription-fallback-check.mjs --dry-run",
+    "test:release:beta": "node scripts/release-beta-check.mjs",
+    "test:release:beta:dry-run": "node scripts/release-beta-check.mjs --dry-run",
+    "test:healthkit:permission": "node scripts/healthkit-permission-check.mjs",
+    "test:healthkit:permission:dry-run": "node scripts/healthkit-permission-check.mjs --dry-run",
+    "test:healthconnect:provider": "node scripts/healthconnect-provider-check.mjs",
+    "test:healthconnect:provider:dry-run": "node scripts/healthconnect-provider-check.mjs --dry-run",
+    "test:health:contract": "node scripts/health-contract-check.mjs",
+    "test:health:sync-idempotency": "node scripts/health-sync-idempotency-check.mjs",
+    "test:health:sync-idempotency:dry-run": "node scripts/health-sync-idempotency-check.mjs --dry-run",
+    "check:legacy-types": "node scripts/check-legacy-type-imports.mjs",
+    "check:task3-matrix": "node scripts/check-task3-matrix-coverage.mjs"
+  }
+}

@@ -1,0 +1,12 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Sign out"
+- tapOn: "Sign out"
+- assertVisible: "Fit Hub Mobile"
+- tapOn: "Email"
+- inputText: ${E2E_USER_EMAIL}
+- tapOn: "Password"
+- inputText: ${E2E_USER_PASSWORD}
+- tapOn: "Sign in"
+- assertVisible: "Dashboard"

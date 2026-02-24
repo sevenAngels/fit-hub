@@ -1,0 +1,6 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Dashboard"
+- assertVisible: "Today Nutrition"
+- assertVisible: "Open weekly report"

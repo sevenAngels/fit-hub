@@ -1,0 +1,25 @@
+appId: com.fithub.mobile
+---
+- launchApp
+- assertVisible: "Fit Hub Mobile"
+- tapOn: "Email"
+- inputText: ${E2E_USER_EMAIL}
+- tapOn: "Password"
+- inputText: ${E2E_USER_PASSWORD}
+- tapOn: "Sign in"
+- runFlow:
+    when:
+      visible: "Onboarding"
+    commands:
+      - tapOn: "Nickname"
+      - inputText: ${E2E_ONBOARDING_NICKNAME}
+      - tapOn: "Next"
+      - tapOn: "Height (cm)"
+      - inputText: "170"
+      - tapOn: "Current weight (kg)"
+      - inputText: "70"
+      - tapOn: "Next"
+      - tapOn: "MBTI (e.g. INFP)"
+      - inputText: "INTJ"
+      - tapOn: "Complete"
+- assertVisible: "Dashboard"

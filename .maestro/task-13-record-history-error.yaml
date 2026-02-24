@@ -1,0 +1,15 @@
+appId: com.fithub.mobile
+---
+- launchApp
+- assertVisible: "Protected Route Group"
+- tapOn: "Open record upload"
+- assertVisible: "Record Upload"
+- tapOn: "Gallery"
+- tapOn: "Upload Meal"
+- assertVisible: "Upload complete"
+- tapOn: "Open uploaded record"
+- assertVisible: "Record Detail"
+- tapOn: "Delete record"
+- tapOn: "Delete"
+- assertVisible: "Record History"
+- tapOn: "Refresh"

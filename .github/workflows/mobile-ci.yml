@@ -1,0 +1,73 @@
+name: mobile-ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  mobile-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.4
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+
+      - name: Install mobile dependencies
+        run: npm ci --prefix apps/mobile
+
+      - name: Lint
+        run: npm --prefix apps/mobile run lint
+
+      - name: Typecheck
+        run: npm --prefix apps/mobile run typecheck
+
+      - name: Unit tests
+        run: npm --prefix apps/mobile run test:run
+
+      - name: Build export
+        run: npm --prefix apps/mobile run build
+
+      - name: E2E suite contract dry-run
+        run: npm run test:e2e:core:dry-run
+
+      - name: Observability contract dry-run
+        run: npm run test:observability:dry-run
+
+      - name: Subscription fallback contract dry-run
+        run: npm run test:subscription:fallback:dry-run
+
+      - name: Release beta contract dry-run
+        run: npm run test:release:beta:dry-run
+
+      - name: Health contract check
+        run: npm run test:health:contract
+
+      - name: HealthKit permission contract dry-run
+        run: npm run test:healthkit:permission:dry-run
+
+      - name: Health Connect provider contract dry-run
+        run: npm run test:healthconnect:provider:dry-run
+
+      - name: Health sync idempotency contract dry-run
+        run: npm run test:health:sync-idempotency:dry-run
+
+      - name: Upload build and evidence artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ci-artifacts
+          path: |
+            apps/mobile/dist
+            .sisyphus/evidence
+            .sisyphus/evidence/failures
+          if-no-files-found: warn

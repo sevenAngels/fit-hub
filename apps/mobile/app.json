@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Fit Hub",
+    "slug": "fit-hub-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "fithub",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-health-connect",
+      "@sentry/react-native"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fithub.mobile",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSHealthShareUsageDescription": "Step count and active calories are used for dashboard and report insights.",
+        "NSHealthUpdateUsageDescription": "The app does not write Health data during MVP."
+      }
+    },
+    "android": {
+      "package": "com.fithub.mobile",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.READ_ACTIVE_CALORIES_BURNED"
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Dashboard"
+- tapOn: "Open daily mood"
+- assertVisible: "Daily Mood"
+- tapOn: "Back to dashboard"
+- assertVisible: "Open goals & habits"

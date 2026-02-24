@@ -1,0 +1,14 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Open daily mood"
+- tapOn: "Open daily mood"
+- assertVisible: "Daily Mood"
+- tapOn: "Save mood"
+- assertVisible: "Mood saved."
+- tapOn: "Back to dashboard"
+- assertVisible: "Open weekly report"
+- tapOn: "Open weekly report"
+- assertVisible: "Feedback & Weekly Report"
+- tapOn: "Generate weekly report"
+- assertVisible: "Selected Week Detail"

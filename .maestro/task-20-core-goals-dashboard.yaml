@@ -1,0 +1,11 @@
+appId: com.fithub.mobile
+---
+- runFlow: _shared-signin.yaml
+- assertVisible: "Open goals & habits"
+- tapOn: "Open goals & habits"
+- assertVisible: "Goals & Habits"
+- tapOn: "Save calories"
+- assertVisible: "Target calories saved."
+- tapOn: "Back to dashboard"
+- assertVisible: "Dashboard"
+- assertVisible: "Goals Progress"
