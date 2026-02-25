@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type ListRenderItem } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View, type ListRenderItem } from "react-native";
 
 import {
   useAddHabitGoalMutation,
@@ -11,6 +11,8 @@ import {
   useWeightGoalData
 } from "@/features/goals/queries";
 import { getGoalsTodayDate, type HabitGoalItem, type ProgramGoal } from "@/features/goals/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoCard, NeoInput } from "@/shared/ui/neo-primitives";
 
 function parseDecimal(value: string): number | null {
   const trimmed = value.trim();
@@ -169,21 +171,17 @@ export default function GoalsPage() {
       <Text style={styles.title}>Goals & Habits</Text>
       <Text style={styles.subtitle}>Manage weight direction, calorie target, and daily habits.</Text>
 
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/(protected)")}>
-        <Text style={styles.secondaryLabel}>Back to dashboard</Text>
-      </Pressable>
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.replace("/(protected)")} label="Back to dashboard" />
 
-      {goalDataQuery.isLoading ? <ActivityIndicator size="small" color="#2f6fa8" /> : null}
+      {goalDataQuery.isLoading ? <ActivityIndicator size="small" color={neoColors.primary} /> : null}
       {goalDataQuery.error ? (
         <View style={styles.errorCard}>
           <Text style={styles.errorText}>{goalDataQuery.error.message}</Text>
-          <Pressable style={styles.retryButton} onPress={() => void goalDataQuery.refetch()}>
-            <Text style={styles.retryLabel}>Retry load</Text>
-          </Pressable>
+          <NeoButton variant="danger" style={styles.retryButton} labelStyle={styles.retryLabel} onPress={() => void goalDataQuery.refetch()} label="Retry load" />
         </View>
       ) : null}
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Weight Goal</Text>
 
         <View style={styles.choiceRow}>
@@ -203,7 +201,7 @@ export default function GoalsPage() {
           </Pressable>
         </View>
 
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={currentWeightText}
           onChangeText={setCurrentWeightText}
@@ -211,7 +209,7 @@ export default function GoalsPage() {
           placeholder="Current weight (kg)"
           editable={!isBusy}
         />
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={targetWeightText}
           onChangeText={setTargetWeightText}
@@ -220,14 +218,12 @@ export default function GoalsPage() {
           editable={!isBusy}
         />
 
-        <Pressable style={styles.primaryButton} onPress={() => void submitWeightGoal()} disabled={isBusy}>
-          <Text style={styles.primaryLabel}>{saveWeightGoalMutation.isPending ? "Saving..." : "Save weight goal"}</Text>
-        </Pressable>
-      </View>
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel} onPress={() => void submitWeightGoal()} disabled={isBusy} label={saveWeightGoalMutation.isPending ? "Saving..." : "Save weight goal"} />
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Calorie Goal</Text>
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={targetCaloriesText}
           onChangeText={setTargetCaloriesText}
@@ -235,34 +231,28 @@ export default function GoalsPage() {
           placeholder="Target calories (kcal)"
           editable={!isBusy}
         />
-        <Pressable style={styles.primaryButton} onPress={() => void submitCalorieGoal()} disabled={isBusy}>
-          <Text style={styles.primaryLabel}>{saveCalorieGoalMutation.isPending ? "Saving..." : "Save calories"}</Text>
-        </Pressable>
-      </View>
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel} onPress={() => void submitCalorieGoal()} disabled={isBusy} label={saveCalorieGoalMutation.isPending ? "Saving..." : "Save calories"} />
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Daily Habits ({todayDate})</Text>
 
         <View style={styles.habitInputRow}>
-          <TextInput
+          <NeoInput
             style={[styles.input, styles.habitInput]}
             value={newHabit}
             onChangeText={setNewHabit}
             placeholder="Add a habit"
             editable={!isBusy}
           />
-          <Pressable style={styles.addButton} onPress={() => void submitHabit()} disabled={isBusy}>
-            <Text style={styles.addLabel}>{addHabitMutation.isPending ? "Adding..." : "Add"}</Text>
-          </Pressable>
+          <NeoButton variant="primary" style={styles.addButton} labelStyle={styles.addLabel} onPress={() => void submitHabit()} disabled={isBusy} label={addHabitMutation.isPending ? "Adding..." : "Add"} />
         </View>
 
-        {habitsQuery.isLoading ? <ActivityIndicator size="small" color="#2f6fa8" /> : null}
+        {habitsQuery.isLoading ? <ActivityIndicator size="small" color={neoColors.primary} /> : null}
         {habitsQuery.error ? (
           <View style={styles.errorCard}>
             <Text style={styles.errorText}>{habitsQuery.error.message}</Text>
-            <Pressable style={styles.retryButton} onPress={() => void habitsQuery.refetch()}>
-              <Text style={styles.retryLabel}>Retry habits</Text>
-            </Pressable>
+            <NeoButton variant="danger" style={styles.retryButton} labelStyle={styles.retryLabel} onPress={() => void habitsQuery.refetch()} label="Retry habits" />
           </View>
         ) : null}
 
@@ -284,7 +274,7 @@ export default function GoalsPage() {
         {!habitsQuery.isLoading && !habitsQuery.error && !habitsQuery.data?.length ? (
           <Text style={styles.emptyText}>No habits yet.</Text>
         ) : null}
-      </View>
+      </NeoCard>
 
       {formError ? <Text style={styles.formError}>{formError}</Text> : null}
       {formSuccess ? <Text style={styles.formSuccess}>{formSuccess}</Text> : null}
@@ -295,7 +285,7 @@ export default function GoalsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   content: {
     padding: 16,
@@ -304,38 +294,38 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   secondaryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12
   },
   secondaryLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccdae8",
+    borderColor: neoColors.subtleBorder,
     padding: 12,
     gap: 8
   },
   sectionTitle: {
     fontWeight: "700",
-    color: "#2c4f6f"
+    color: neoColors.ink
   },
   input: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderWidth: 1,
-    borderColor: "#cfd8e3",
+    borderColor: neoColors.subtleBorder,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 10
@@ -347,30 +337,30 @@ const styles = StyleSheet.create({
   choiceChip: {
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#91a5ba",
+    borderColor: neoColors.subtleBorder,
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: "#ffffff"
+    backgroundColor: neoColors.white
   },
   choiceChipActive: {
-    borderColor: "#2f6fa8",
-    backgroundColor: "#2f6fa8"
+    borderColor: neoColors.primary,
+    backgroundColor: neoColors.primary
   },
   choiceText: {
-    color: "#39536e",
+    color: neoColors.muted,
     fontWeight: "600"
   },
   choiceTextActive: {
-    color: "#ffffff"
+    color: neoColors.white
   },
   primaryButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   habitInputRow: {
@@ -382,13 +372,13 @@ const styles = StyleSheet.create({
     flex: 1
   },
   addButton: {
-    backgroundColor: "#375f86",
+    backgroundColor: neoColors.primaryStrong,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12
   },
   addLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   habitList: {
@@ -397,7 +387,7 @@ const styles = StyleSheet.create({
   },
   habitRow: {
     borderWidth: 1,
-    borderColor: "#bfd0df",
+    borderColor: neoColors.subtleBorder,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
@@ -406,51 +396,51 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   habitRowDone: {
-    borderColor: "#2f6fa8",
-    backgroundColor: "#e8f2fb"
+    borderColor: neoColors.primary,
+    backgroundColor: neoColors.secondary
   },
   habitTitle: {
-    color: "#243a56",
+    color: neoColors.ink,
     fontWeight: "600"
   },
   habitTitleDone: {
-    color: "#1f4d77"
+    color: neoColors.muted
   },
   habitBadge: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   habitSeparator: {
     height: 8
   },
   emptyText: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   errorCard: {
     borderWidth: 1,
-    borderColor: "#f1b0ba",
+    borderColor: neoColors.dangerBorder,
     borderRadius: 10,
-    backgroundColor: "#fff2f4",
+    backgroundColor: neoColors.dangerPale,
     padding: 10,
     gap: 8
   },
   errorText: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   retryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#f4d3d8",
+    backgroundColor: neoColors.dangerSoft,
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 10
   },
   retryLabel: {
-    color: "#8b0015",
+    color: neoColors.dangerStrong,
     fontWeight: "700"
   },
   formError: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   formSuccess: {
-    color: "#276749"
+    color: neoColors.successText
   }
 });

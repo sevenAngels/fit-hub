@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { subscriptionQueryKeys, useReportCheckoutReturnMutation } from "@/features/subscription/queries";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton } from "@/shared/ui/neo-primitives";
 
 function isSubscriptionReturnUrl(url: string | null) {
   if (!url) {
@@ -86,15 +88,23 @@ export default function SubscriptionCallbackPage() {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#2f6fa8" />
+      <ActivityIndicator size="large" color={neoColors.primary} />
       <Text style={styles.title}>Subscription Checkout</Text>
       <Text style={styles.message}>{statusMessage}</Text>
-      <Pressable style={styles.button} onPress={() => router.replace("/(protected)/profile")}>
-        <Text style={styles.buttonLabel}>Back to profile</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/(protected)")}>
-        <Text style={styles.secondaryLabel}>Go to dashboard</Text>
-      </Pressable>
+      <NeoButton
+        variant="primary"
+        style={styles.button}
+        labelStyle={styles.buttonLabel}
+        onPress={() => router.replace("/(protected)/profile")}
+        label="Back to profile"
+      />
+      <NeoButton
+        variant="accent"
+        style={styles.secondaryButton}
+        labelStyle={styles.secondaryLabel}
+        onPress={() => router.replace("/(protected)")}
+        label="Go to dashboard"
+      />
     </View>
   );
 }
@@ -106,36 +116,36 @@ const styles = StyleSheet.create({
     gap: 12,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   message: {
-    color: "#4f5f76",
+    color: neoColors.muted,
     textAlign: "center"
   },
   button: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 14,
     marginTop: 8
   },
   buttonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   secondaryButton: {
-    backgroundColor: "#7ca9d1",
+    backgroundColor: neoColors.accent,
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 14
   },
   secondaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   }
 });

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { dashboardQueryKeys } from "@/features/dashboard/queries";
 import { mealQueryKeys } from "@/features/record/queries";
@@ -13,6 +13,8 @@ import {
   type UploadSource,
   uploadMealImage
 } from "@/features/record/upload-adapter";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoInput } from "@/shared/ui/neo-primitives";
 
 type UploadRequest = {
   image: PickedMealImage;
@@ -144,17 +146,13 @@ export default function RecordUploadPage() {
       <Text style={styles.subtitle}>Pick image, upload with progress, and retry on failure.</Text>
 
       <View style={styles.row}>
-        <Pressable style={styles.secondaryButton} onPress={() => void pickImage("camera")} disabled={isUploading}>
-          <Text style={styles.secondaryLabel}>Camera</Text>
-        </Pressable>
-        <Pressable style={styles.secondaryButton} onPress={() => void pickImage("library")} disabled={isUploading}>
-          <Text style={styles.secondaryLabel}>Gallery</Text>
-        </Pressable>
+        <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => void pickImage("camera")} disabled={isUploading} label="Camera" />
+        <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => void pickImage("library")} disabled={isUploading} label="Gallery" />
       </View>
 
       {selectedImage ? <Image source={{ uri: selectedImage.uri }} style={styles.preview} /> : null}
 
-      <TextInput
+      <NeoInput
         style={styles.input}
         value={date}
         onChangeText={setDate}
@@ -176,9 +174,7 @@ export default function RecordUploadPage() {
         ))}
       </View>
 
-      <Pressable style={styles.primaryButton} onPress={() => void startUpload()} disabled={isUploading}>
-        <Text style={styles.primaryLabel}>{isUploading ? "Uploading..." : "Upload Meal"}</Text>
-      </Pressable>
+      <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel} onPress={() => void startUpload()} disabled={isUploading} label={isUploading ? "Uploading..." : "Upload Meal"} />
 
       <View style={styles.progressTrack}>
         <View style={[styles.progressFill, { width: `${Math.round(progress * 100)}%` }]} />
@@ -189,19 +185,13 @@ export default function RecordUploadPage() {
       {success ? <Text style={styles.success}>{success}</Text> : null}
 
       {error && lastRequest ? (
-        <Pressable style={styles.retryButton} onPress={() => void runUpload(lastRequest)} disabled={isUploading}>
-          <Text style={styles.retryLabel}>{isUploading ? "Retrying..." : "Retry last upload"}</Text>
-        </Pressable>
+        <NeoButton variant="danger" style={styles.retryButton} labelStyle={styles.retryLabel} onPress={() => void runUpload(lastRequest)} disabled={isUploading} label={isUploading ? "Retrying..." : "Retry last upload"} />
       ) : null}
 
       {lastResult ? (
         <View style={styles.resultActions}>
-          <Pressable style={styles.actionButton} onPress={() => router.push(`/(protected)/record/${lastResult.mealId}`)}>
-            <Text style={styles.actionLabel}>Open uploaded record</Text>
-          </Pressable>
-          <Pressable style={styles.actionButton} onPress={() => void openHistory()}>
-            <Text style={styles.actionLabel}>Open history for date</Text>
-          </Pressable>
+          <NeoButton variant="secondary" style={styles.actionButton} labelStyle={styles.actionLabel} onPress={() => router.push(`/(protected)/record/${lastResult.mealId}`)} label="Open uploaded record" />
+          <NeoButton variant="secondary" style={styles.actionButton} labelStyle={styles.actionLabel} onPress={() => void openHistory()} label="Open history for date" />
         </View>
       ) : null}
     </View>
@@ -213,44 +203,44 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center",
-    backgroundColor: "#eef4f8",
+    backgroundColor: neoColors.background,
     gap: 10
   },
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   row: {
     flexDirection: "row",
     gap: 10
   },
   secondaryButton: {
-    backgroundColor: "#d8e2ec",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 14
   },
   secondaryLabel: {
-    color: "#243a56",
+    color: neoColors.ink,
     fontWeight: "600"
   },
   preview: {
     width: "100%",
     height: 180,
     borderRadius: 12,
-    backgroundColor: "#c8d3df"
+    backgroundColor: neoColors.secondary
   },
   input: {
     width: "100%",
     padding: 12,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#d0d8e1",
-    backgroundColor: "#ffffff"
+    borderWidth: 2,
+    borderColor: neoColors.ink,
+    backgroundColor: neoColors.white
   },
   mealTypeWrap: {
     flexDirection: "row",
@@ -259,79 +249,79 @@ const styles = StyleSheet.create({
   },
   chip: {
     borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "#90a4b9",
+    borderWidth: 2,
+    borderColor: neoColors.ink,
     paddingVertical: 6,
     paddingHorizontal: 10,
-    backgroundColor: "#ffffff"
+    backgroundColor: neoColors.white
   },
   chipActive: {
-    borderColor: "#2f6fa8",
-    backgroundColor: "#2f6fa8"
+    borderColor: neoColors.primary,
+    backgroundColor: neoColors.primary
   },
   chipText: {
-    color: "#39536e",
+    color: neoColors.muted,
     fontSize: 12,
     fontWeight: "600"
   },
   chipTextActive: {
-    color: "#ffffff"
+    color: neoColors.white
   },
   primaryButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 12,
     paddingVertical: 12,
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   progressTrack: {
     width: "100%",
     height: 10,
     borderRadius: 999,
-    backgroundColor: "#d7e3ef",
+    backgroundColor: neoColors.secondary,
     overflow: "hidden"
   },
   progressFill: {
     height: "100%",
-    backgroundColor: "#2f6fa8"
+    backgroundColor: neoColors.primary
   },
   progressText: {
-    color: "#39536e",
+    color: neoColors.muted,
     fontWeight: "600"
   },
   error: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   success: {
-    color: "#276749"
+    color: neoColors.successText
   },
   retryButton: {
-    backgroundColor: "#f9d7dd",
+    backgroundColor: neoColors.dangerSoft,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   retryLabel: {
-    color: "#8b0015",
+    color: neoColors.dangerStrong,
     fontWeight: "700"
   },
   resultActions: {
     gap: 10
   },
   actionButton: {
-    backgroundColor: "#e2f2ff",
-    borderWidth: 1,
-    borderColor: "#2f6fa8",
+    backgroundColor: neoColors.secondary,
+    borderWidth: 2,
+    borderColor: neoColors.primary,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 14,
     alignItems: "center"
   },
   actionLabel: {
-    color: "#153c61",
+    color: neoColors.ink,
     fontWeight: "700"
   }
 });

@@ -4,13 +4,12 @@ import {
   ActivityIndicator,
   Alert,
   Image,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View
 } from "react-native";
+import { neoColors } from "@/shared/ui/neo-theme";
 
 import {
   useDeleteMealRecordMutation,
@@ -18,6 +17,7 @@ import {
   useUpdateMealRecordMutation
 } from "@/features/record/queries";
 import type { MealRecordItem } from "@/features/record/service";
+import { NeoButton, NeoCard, NeoInput } from "@/shared/ui/neo-primitives";
 
 const mealTypeLabels: Record<MealRecordItem["meal_type"], string> = {
   breakfast: "Breakfast",
@@ -160,7 +160,7 @@ export default function RecordDetailPage() {
   if (!mealId || isPending) {
     return (
       <View style={styles.centerScreen}>
-        <ActivityIndicator size="large" color="#2f6fa8" />
+        <ActivityIndicator size="large" color={neoColors.primary} />
       </View>
     );
   }
@@ -169,9 +169,7 @@ export default function RecordDetailPage() {
     return (
       <View style={styles.centerScreen}>
         <Text style={styles.error}>{(error as Error | null)?.message ?? "Unable to load record."}</Text>
-        <Pressable style={styles.secondaryButton} onPress={() => void refetch()}>
-          <Text style={styles.secondaryLabel}>Retry load</Text>
-        </Pressable>
+        <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => void refetch()} label="Retry load" />
       </View>
     );
   }
@@ -180,9 +178,7 @@ export default function RecordDetailPage() {
     <ScrollView contentContainerStyle={styles.page}>
       <Text style={styles.title}>Record Detail</Text>
 
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/(protected)/record-history")}>
-        <Text style={styles.secondaryLabel}>Back to history</Text>
-      </Pressable>
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.replace("/(protected)/record-history")} label="Back to history" />
 
       <Text style={styles.recordName}>{meal.food_name ?? "Untitled record"}</Text>
       <Text style={styles.recordMeta}>
@@ -192,31 +188,31 @@ export default function RecordDetailPage() {
 
       {meal.image_url ? <Image source={{ uri: meal.image_url }} style={styles.image} /> : null}
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Nutrition</Text>
 
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={caloriesText}
           onChangeText={setCaloriesText}
           placeholder="Calories"
           keyboardType="decimal-pad"
         />
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={carbText}
           onChangeText={setCarbText}
           placeholder="Carbohydrates (g)"
           keyboardType="decimal-pad"
         />
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={proteinText}
           onChangeText={setProteinText}
           placeholder="Protein (g)"
           keyboardType="decimal-pad"
         />
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={fatText}
           onChangeText={setFatText}
@@ -224,23 +220,24 @@ export default function RecordDetailPage() {
           keyboardType="decimal-pad"
         />
 
-        <Pressable
+        <NeoButton
+          variant="primary"
           style={[styles.primaryButton, (updateMutation.isPending ? styles.disabledButton : null)]}
+          labelStyle={styles.primaryLabel}
           onPress={() => void onSave()}
           disabled={updateMutation.isPending}
-        >
-          <Text style={styles.primaryLabel}>{updateMutation.isPending ? "Saving..." : "Save nutrition"}</Text>
-        </Pressable>
-      </View>
+          label={updateMutation.isPending ? "Saving..." : "Save nutrition"}
+        />
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>AI Review</Text>
         <Text style={styles.review}>{meal.ai_review ?? "No AI review."}</Text>
-      </View>
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Notes</Text>
-        <TextInput
+        <NeoInput
           style={[styles.input, styles.textArea]}
           value={noteText}
           onChangeText={setNoteText}
@@ -248,25 +245,27 @@ export default function RecordDetailPage() {
           multiline
         />
 
-        <Pressable
+        <NeoButton
+          variant="primary"
           style={[styles.primaryButton, (updateMutation.isPending ? styles.disabledButton : null)]}
+          labelStyle={styles.primaryLabel}
           onPress={() => void onSave()}
           disabled={updateMutation.isPending}
-        >
-          <Text style={styles.primaryLabel}>{updateMutation.isPending ? "Saving..." : "Save note"}</Text>
-        </Pressable>
-      </View>
+          label={updateMutation.isPending ? "Saving..." : "Save note"}
+        />
+      </NeoCard>
 
       {formError ? <Text style={styles.error}>{formError}</Text> : null}
       {formSuccess ? <Text style={styles.success}>{formSuccess}</Text> : null}
 
-      <Pressable
+      <NeoButton
+        variant="danger"
         style={[styles.deleteButton, deleteMutation.isPending ? styles.disabledButton : null]}
+        labelStyle={styles.deleteLabel}
         onPress={() => void onDelete()}
         disabled={deleteMutation.isPending}
-      >
-        <Text style={styles.deleteLabel}>{deleteMutation.isPending ? "Deleting..." : "Delete record"}</Text>
-      </Pressable>
+        label={deleteMutation.isPending ? "Deleting..." : "Delete record"}
+      />
     </ScrollView>
   );
 }
@@ -276,60 +275,60 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   page: {
-    backgroundColor: "#eef4f8",
+    backgroundColor: neoColors.background,
     padding: 16,
     gap: 10
   },
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   secondaryButton: {
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12,
     alignSelf: "flex-start"
   },
   secondaryLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   recordName: {
     marginTop: 6,
     fontSize: 22,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   recordMeta: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   image: {
     width: "100%",
     aspectRatio: 16 / 9,
     borderRadius: 12,
-    backgroundColor: "#d8e2ec"
+    backgroundColor: neoColors.secondary
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#cfdbe6",
+    borderWidth: 2,
+    borderColor: neoColors.ink,
     padding: 12,
     gap: 8
   },
   sectionTitle: {
     fontWeight: "700",
-    color: "#2c4f6f"
+    color: neoColors.ink
   },
   input: {
-    backgroundColor: "#ffffff",
-    borderWidth: 1,
-    borderColor: "#cfd8e3",
+    backgroundColor: neoColors.white,
+    borderWidth: 2,
+    borderColor: neoColors.ink,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 10
@@ -340,36 +339,36 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     marginTop: 6,
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   disabledButton: {
     opacity: 0.6
   },
   review: {
-    color: "#2e4d6f"
+    color: neoColors.muted
   },
   error: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   success: {
-    color: "#276749"
+    color: neoColors.successText
   },
   deleteButton: {
     marginTop: 8,
-    backgroundColor: "#c53030",
+    backgroundColor: neoColors.destructive,
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: "center"
   },
   deleteLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   }
 });

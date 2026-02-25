@@ -1,8 +1,10 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View, type ListRenderItem } from "react-native";
+import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View, type ListRenderItem } from "react-native";
 
 import { type MealRecordListItem, useMealHistoryByDate } from "@/features/record/queries";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoCard, NeoInput } from "@/shared/ui/neo-primitives";
 
 const mealTypeLabels: Record<MealRecordListItem["meal_type"], string> = {
   breakfast: "Breakfast",
@@ -49,16 +51,18 @@ type MealHistoryCardProps = {
 
 const MealHistoryCard = memo(function MealHistoryCard({ meal, onOpenRecord }: MealHistoryCardProps) {
   return (
-    <Pressable style={styles.card} onPress={() => onOpenRecord(meal.id)}>
-      {meal.image_url ? <Image source={{ uri: meal.image_url }} style={styles.thumb} /> : null}
-      <View style={styles.cardBody}>
-        <View style={styles.cardHead}>
-          <Text style={styles.cardTitle}>{meal.food_name || "Record"}</Text>
-          <Text style={styles.cardScore}>{meal.total_calories ?? 0} kcal</Text>
+    <Pressable onPress={() => onOpenRecord(meal.id)}>
+      <NeoCard style={styles.card}>
+        {meal.image_url ? <Image source={{ uri: meal.image_url }} style={styles.thumb} /> : null}
+        <View style={styles.cardBody}>
+          <View style={styles.cardHead}>
+            <Text style={styles.cardTitle}>{meal.food_name || "Record"}</Text>
+            <Text style={styles.cardScore}>{meal.total_calories ?? 0} kcal</Text>
+          </View>
+          <Text style={styles.cardMeta}>{mealTypeLabels[meal.meal_type]} - {formatTime(meal.created_at)}</Text>
+          {meal.ai_review ? <Text style={styles.cardReview} numberOfLines={2}>{meal.ai_review}</Text> : null}
         </View>
-        <Text style={styles.cardMeta}>{mealTypeLabels[meal.meal_type]} - {formatTime(meal.created_at)}</Text>
-        {meal.ai_review ? <Text style={styles.cardReview} numberOfLines={2}>{meal.ai_review}</Text> : null}
-      </View>
+      </NeoCard>
     </Pressable>
   );
 });
@@ -110,9 +114,13 @@ export default function RecordHistoryPage() {
 
   const renderListFooter = useCallback(
     () => (
-      <Pressable style={styles.uploadButton} onPress={() => router.push("/(protected)/record-upload")}>
-        <Text style={styles.uploadButtonLabel}>Upload new record</Text>
-      </Pressable>
+      <NeoButton
+        variant="primary"
+        style={styles.uploadButton}
+        labelStyle={styles.uploadButtonLabel}
+        onPress={() => router.push("/(protected)/record-upload")}
+        label="Upload new record"
+      />
     ),
     [router]
   );
@@ -125,22 +133,22 @@ export default function RecordHistoryPage() {
       <Text style={styles.subtitle}>Browse and open records by date.</Text>
 
       <View style={styles.dateRow}>
-        <TextInput style={styles.dateInput} value={draftDate} onChangeText={setDraftDate} placeholder="YYYY-MM-DD" />
-        <Pressable style={styles.smallButton} onPress={() => void openDate()}>
-          <Text style={styles.smallButtonLabel}>Go</Text>
-        </Pressable>
-        <Pressable style={styles.smallButton} onPress={applyToday}>
-          <Text style={styles.smallButtonLabel}>Today</Text>
-        </Pressable>
+        <NeoInput style={styles.dateInput} value={draftDate} onChangeText={setDraftDate} placeholder="YYYY-MM-DD" />
+        <NeoButton variant="primary" style={styles.smallButton} labelStyle={styles.smallButtonLabel} onPress={() => void openDate()} label="Go" />
+        <NeoButton variant="primary" style={styles.smallButton} labelStyle={styles.smallButtonLabel} onPress={applyToday} label="Today" />
       </View>
 
       <Text style={styles.summary}>{summaryText}</Text>
 
-      <Pressable style={styles.primaryButton} onPress={() => void refetch()}>
-        <Text style={styles.primaryButtonLabel}>Refresh</Text>
-      </Pressable>
+      <NeoButton
+        variant="primary"
+        style={styles.primaryButton}
+        labelStyle={styles.primaryButtonLabel}
+        onPress={() => void refetch()}
+        label="Refresh"
+      />
 
-      {isLoading ? <ActivityIndicator size="large" color="#2f6fa8" style={styles.loader} /> : null}
+      {isLoading ? <ActivityIndicator size="large" color={neoColors.primary} style={styles.loader} /> : null}
       {isError ? <Text style={styles.error}>{(error as Error | null)?.message ?? "Failed to load records."}</Text> : null}
 
       {!isLoading && !isError ? (
@@ -167,15 +175,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
-    color: "#4f5f76",
+    color: neoColors.muted,
     marginBottom: 12
   },
   dateRow: {
@@ -185,37 +193,37 @@ const styles = StyleSheet.create({
   },
   dateInput: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#d0d8e1",
+    borderWidth: 2,
+    borderColor: neoColors.ink,
     paddingHorizontal: 12,
     paddingVertical: 10
   },
   smallButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10
   },
   smallButtonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   summary: {
     marginTop: 12,
-    color: "#4b5f76"
+    color: neoColors.muted
   },
   primaryButton: {
     marginTop: 10,
     alignSelf: "flex-start",
-    backgroundColor: "#375f86",
+    backgroundColor: neoColors.primaryStrong,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 8
   },
   primaryButtonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   loader: {
@@ -223,7 +231,7 @@ const styles = StyleSheet.create({
   },
   error: {
     marginTop: 16,
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   list: {
     marginTop: 8,
@@ -235,13 +243,13 @@ const styles = StyleSheet.create({
   },
   empty: {
     marginTop: 20,
-    color: "#4b5f76"
+    color: neoColors.muted
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#c8d6e2",
+    borderWidth: 2,
+    borderColor: neoColors.ink,
     padding: 10,
     flexDirection: "row",
     gap: 10
@@ -250,7 +258,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 10,
-    backgroundColor: "#d8e2ec"
+    backgroundColor: neoColors.secondary
   },
   cardBody: {
     flex: 1,
@@ -263,35 +271,35 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontWeight: "700",
-    color: "#243a56",
+    color: neoColors.ink,
     flex: 1
   },
   cardScore: {
-    color: "#2f6fa8",
+    color: neoColors.primary,
     fontWeight: "700"
   },
   cardMeta: {
-    color: "#4b5f76",
+    color: neoColors.muted,
     fontSize: 12
   },
   cardReview: {
-    color: "#3e3e3e",
+    color: neoColors.muted,
     fontSize: 12
   },
   uploadButton: {
     marginTop: 4,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#2f6fa8",
+    borderWidth: 2,
+    borderColor: neoColors.primary,
     paddingVertical: 12,
     alignItems: "center",
-    backgroundColor: "#e1edfc"
+    backgroundColor: neoColors.secondary
   },
   itemSeparator: {
     height: 10
   },
   uploadButtonLabel: {
-    color: "#1f4f7f",
+    color: neoColors.muted,
     fontWeight: "700"
   }
 });

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { sendPasswordReset } from "@/features/auth/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoInput } from "@/shared/ui/neo-primitives";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -32,7 +34,7 @@ export default function ForgotPasswordPage() {
       <Text style={styles.title}>Reset password</Text>
       <Text style={styles.subtitle}>Enter your account email to receive a reset link.</Text>
 
-      <TextInput
+      <NeoInput
         style={styles.input}
         value={email}
         onChangeText={setEmail}
@@ -44,9 +46,14 @@ export default function ForgotPasswordPage() {
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {message ? <Text style={styles.message}>{message}</Text> : null}
 
-      <Pressable style={styles.button} onPress={requestReset} disabled={isSubmitting}>
-        <Text style={styles.buttonLabel}>{isSubmitting ? "Sending..." : "Send link"}</Text>
-      </Pressable>
+      <NeoButton
+        variant="primary"
+        style={styles.button}
+        labelStyle={styles.buttonLabel}
+        onPress={requestReset}
+        disabled={isSubmitting}
+        label={isSubmitting ? "Sending..." : "Send link"}
+      />
 
       <Link href="/" asChild>
         <Pressable>
@@ -64,16 +71,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 24,
     gap: 12,
-    backgroundColor: "#f8f6f2"
+    backgroundColor: neoColors.background
   },
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#2f3a24"
+    color: neoColors.ink
   },
   subtitle: {
     fontSize: 16,
-    color: "#55624c",
+    color: neoColors.muted,
     textAlign: "center"
   },
   input: {
@@ -81,13 +88,13 @@ const styles = StyleSheet.create({
     maxWidth: 360,
     padding: 12,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#d6d8dc",
-    backgroundColor: "#ffffff"
+    borderWidth: 2,
+    borderColor: neoColors.ink,
+    backgroundColor: neoColors.white
   },
   button: {
     marginTop: 16,
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18,
@@ -95,16 +102,16 @@ const styles = StyleSheet.create({
     minWidth: 180
   },
   buttonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "600"
   },
   error: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   message: {
-    color: "#276749"
+    color: neoColors.successText
   },
   link: {
-    color: "#2f6fa8"
+    color: neoColors.primary
   }
 });

@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useOpenSubscriptionCheckoutMutation, useSubscriptionStatus } from "@/features/subscription/queries";
 import type { CheckoutIntent, SubscriptionStatus } from "@/features/subscription/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoCard } from "@/shared/ui/neo-primitives";
 
 function formatDate(value: string | null): string {
   if (!value) {
@@ -123,16 +125,14 @@ export default function SubscriptionPage() {
       <Text style={styles.title}>Subscription</Text>
       <Text style={styles.subtitle}>Check your current plan and continue payment on secure web checkout.</Text>
 
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/(protected)")}>
-        <Text style={styles.secondaryLabel}>Back to dashboard</Text>
-      </Pressable>
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.replace("/(protected)")} label="Back to dashboard" />
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Current status</Text>
 
         {statusQuery.isLoading ? (
           <View style={styles.loadingRow}>
-            <ActivityIndicator size="small" color="#2f6fa8" />
+            <ActivityIndicator size="small" color={neoColors.primary} />
             <Text style={styles.noteText}>Loading subscription...</Text>
           </View>
         ) : null}
@@ -140,9 +140,7 @@ export default function SubscriptionPage() {
         {statusQuery.error ? (
           <View style={styles.errorCard}>
             <Text style={styles.errorText}>{statusQuery.error.message}</Text>
-            <Pressable style={styles.retryButton} onPress={() => void statusQuery.refetch()}>
-              <Text style={styles.retryLabel}>Retry load</Text>
-            </Pressable>
+            <NeoButton variant="danger" style={styles.retryButton} labelStyle={styles.retryLabel} onPress={() => void statusQuery.refetch()} label="Retry load" />
           </View>
         ) : null}
 
@@ -161,9 +159,9 @@ export default function SubscriptionPage() {
             <Text style={styles.metaText}>Payment method: {statusQuery.data?.cardLabel ?? "-"}</Text>
           </>
         ) : null}
-      </View>
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Web checkout fallback</Text>
         <Text style={styles.noteText}>
           For MVP, subscription payment and management continue on the web billing page. The app only displays subscription state.
@@ -172,30 +170,20 @@ export default function SubscriptionPage() {
           Before leaving the app, you will open a secure web page. After checkout, return to this screen and refresh status.
         </Text>
 
-        <Pressable
-          style={styles.primaryButton}
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel}
           onPress={() => void openWebCheckout("upgrade")}
-          disabled={checkoutMutation.isPending}
-        >
-          <Text style={styles.primaryLabel}>{checkoutMutation.isPending ? "Opening..." : "Open web checkout"}</Text>
-        </Pressable>
+          disabled={checkoutMutation.isPending} label={checkoutMutation.isPending ? "Opening..." : "Open web checkout"} />
 
-        <Pressable
-          style={styles.secondaryButtonInline}
+        <NeoButton variant="secondary" style={styles.secondaryButtonInline} labelStyle={styles.secondaryInlineLabel}
           onPress={() => void openWebCheckout("manage")}
-          disabled={checkoutMutation.isPending}
-        >
-          <Text style={styles.secondaryInlineLabel}>Manage billing on web</Text>
-        </Pressable>
+          disabled={checkoutMutation.isPending} label="Manage billing on web" />
 
-        <Pressable style={styles.refreshButton} onPress={() => void statusQuery.refetch()} disabled={statusQuery.isFetching}>
-          <Text style={styles.refreshLabel}>{statusQuery.isFetching ? "Refreshing..." : "Refresh status"}</Text>
-        </Pressable>
+        <NeoButton variant="accent" style={styles.refreshButton} labelStyle={styles.refreshLabel} onPress={() => void statusQuery.refetch()} disabled={statusQuery.isFetching} label={statusQuery.isFetching ? "Refreshing..." : "Refresh status"} />
 
         {flowMessage ? <Text style={styles.successText}>{flowMessage}</Text> : null}
         {flowError ? <Text style={styles.errorText}>{flowError}</Text> : null}
         {lastReturnUrl ? <Text style={styles.traceText}>Tracked return path: {lastReturnUrl}</Text> : null}
-      </View>
+      </NeoCard>
     </ScrollView>
   );
 }
@@ -203,7 +191,7 @@ export default function SubscriptionPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   content: {
     padding: 16,
@@ -212,33 +200,33 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccdae8",
+    borderColor: neoColors.subtleBorder,
     padding: 12,
     gap: 8
   },
   sectionTitle: {
     fontWeight: "700",
-    color: "#2c4f6f"
+    color: neoColors.ink
   },
   statusTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#23486a"
+    color: neoColors.ink
   },
   noteText: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   metaText: {
-    color: "#39536e"
+    color: neoColors.muted
   },
   loadingRow: {
     flexDirection: "row",
@@ -247,72 +235,72 @@ const styles = StyleSheet.create({
   },
   errorCard: {
     borderWidth: 1,
-    borderColor: "#f1b0ba",
+    borderColor: neoColors.dangerBorder,
     borderRadius: 10,
-    backgroundColor: "#fff2f4",
+    backgroundColor: neoColors.dangerPale,
     padding: 10,
     gap: 8
   },
   errorText: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   successText: {
-    color: "#276749"
+    color: neoColors.successText
   },
   traceText: {
-    color: "#5b6f84",
+    color: neoColors.mutedStrong,
     fontSize: 12
   },
   retryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#f4d3d8",
+    backgroundColor: neoColors.dangerSoft,
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 10
   },
   retryLabel: {
-    color: "#8b0015",
+    color: neoColors.dangerStrong,
     fontWeight: "700"
   },
   primaryButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   secondaryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12
   },
   secondaryLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   secondaryButtonInline: {
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   secondaryInlineLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   refreshButton: {
-    backgroundColor: "#7ca9d1",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   refreshLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   }
 });

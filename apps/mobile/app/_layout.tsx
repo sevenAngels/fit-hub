@@ -13,7 +13,7 @@ import {
   trackTelemetryEvent,
   trackHealthTelemetrySnapshot
 } from "@/infrastructure/telemetry/client";
-import { runDeferredHealthSync } from "@/features/health/sync-engine";
+import { healthFlags } from "@/infrastructure/config/env";
 
 function AppLayout() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -27,6 +27,10 @@ function AppLayout() {
   }, [isAuthenticated, isLoading]);
 
   useEffect(() => {
+    if (!healthFlags.enabled) {
+      return;
+    }
+
     if (isLoading) {
       return;
     }
@@ -49,7 +53,8 @@ function AppLayout() {
     });
 
     const timer = setTimeout(() => {
-      void runDeferredHealthSync("startup_post_auth")
+      void import("@/features/health/sync-engine")
+        .then(({ runDeferredHealthSync }) => runDeferredHealthSync("startup_post_auth"))
         .then((result) => {
           trackTelemetryEvent("health.sync.startup.result", {
             trigger: "startup_post_auth",

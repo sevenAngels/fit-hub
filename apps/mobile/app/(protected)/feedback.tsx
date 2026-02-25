@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type ListRenderItem } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View, type ListRenderItem } from "react-native";
 
 import {
   useGenerateWeeklyReportMutation,
@@ -9,6 +9,8 @@ import {
   useWeeklyReports
 } from "@/features/report/queries";
 import { getCurrentReportWeekStartDate, type WeeklyReportSummary } from "@/features/report/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoCard, NeoInput } from "@/shared/ui/neo-primitives";
 
 function formatDateWithTimezone(value: string | null): string {
   if (!value) {
@@ -87,13 +89,11 @@ export default function FeedbackReportPage() {
       <Text style={styles.title}>Feedback & Weekly Report</Text>
       <Text style={styles.subtitle}>Report route is coupled with feedback flow.</Text>
 
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/(protected)")}>
-        <Text style={styles.secondaryLabel}>Back to dashboard</Text>
-      </Pressable>
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.replace("/(protected)")} label="Back to dashboard" />
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Generate by Week Start</Text>
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={weekStartDate}
           onChangeText={setWeekStartDate}
@@ -104,21 +104,15 @@ export default function FeedbackReportPage() {
 
         {!isValidDate ? <Text style={styles.errorText}>Week start must be YYYY-MM-DD.</Text> : null}
 
-        <Pressable
-          style={styles.primaryButton}
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel}
           onPress={() => void generateForSelectedWeek()}
-          disabled={!isValidDate || isBusy}
-        >
-          <Text style={styles.primaryLabel}>
-            {generateWeeklyReportMutation.isPending ? "Generating..." : "Generate weekly report"}
-          </Text>
-        </Pressable>
-      </View>
+          disabled={!isValidDate || isBusy} label={generateWeeklyReportMutation.isPending ? "Generating..." : "Generate weekly report"} />
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Recent Weekly Reports</Text>
 
-        {weeklyReportsQuery.isLoading ? <ActivityIndicator size="small" color="#2f6fa8" /> : null}
+        {weeklyReportsQuery.isLoading ? <ActivityIndicator size="small" color={neoColors.primary} /> : null}
         {weeklyReportsQuery.error ? <Text style={styles.errorText}>{weeklyReportsQuery.error.message}</Text> : null}
 
         {weeklyReportsQuery.data?.length ? (
@@ -139,12 +133,12 @@ export default function FeedbackReportPage() {
         {!weeklyReportsQuery.isLoading && !weeklyReportsQuery.error && !weeklyReportsQuery.data?.length ? (
           <Text style={styles.emptyText}>No weekly reports yet.</Text>
         ) : null}
-      </View>
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Selected Week Detail</Text>
 
-        {weeklyDetailQuery.isLoading ? <ActivityIndicator size="small" color="#2f6fa8" /> : null}
+        {weeklyDetailQuery.isLoading ? <ActivityIndicator size="small" color={neoColors.primary} /> : null}
         {weeklyDetailQuery.error ? <Text style={styles.errorText}>{weeklyDetailQuery.error.message}</Text> : null}
 
         {reportDetail ? (
@@ -188,7 +182,7 @@ export default function FeedbackReportPage() {
 
               {weeklyHealthQuery.isLoading ? (
                 <View style={styles.inlineLoadingRow}>
-                  <ActivityIndicator size="small" color="#2f6fa8" />
+                  <ActivityIndicator size="small" color={neoColors.primary} />
                   <Text style={styles.detailSecondary}>Loading health summary...</Text>
                 </View>
               ) : null}
@@ -205,9 +199,7 @@ export default function FeedbackReportPage() {
                     <>
                       <Text style={styles.emptyText}>Health data unavailable for this week. Reconnect provider/permissions and retry.</Text>
                       {weeklyHealth.errorMessage ? <Text style={styles.warningText}>{weeklyHealth.errorMessage}</Text> : null}
-                      <Pressable style={styles.inlineCtaButton} onPress={() => router.push("/(protected)/health")}>
-                        <Text style={styles.inlineCtaLabel}>Reconnect health</Text>
-                      </Pressable>
+                      <NeoButton variant="secondary" style={styles.inlineCtaButton} labelStyle={styles.inlineCtaLabel} onPress={() => router.push("/(protected)/health")} label="Reconnect health" />
                     </>
                   ) : null}
 
@@ -235,9 +227,7 @@ export default function FeedbackReportPage() {
                       {weeklyHealth.isRunning ? <Text style={styles.detailSecondary}>Health sync in progress...</Text> : null}
 
                       {(weeklyHealth.stale || weeklyHealth.errorMessage) ? (
-                        <Pressable style={styles.inlineCtaButton} onPress={() => router.push("/(protected)/health")}>
-                          <Text style={styles.inlineCtaLabel}>Open health controls</Text>
-                        </Pressable>
+                        <NeoButton variant="secondary" style={styles.inlineCtaButton} labelStyle={styles.inlineCtaLabel} onPress={() => router.push("/(protected)/health")} label="Open health controls" />
                       ) : null}
                     </>
                   ) : null}
@@ -246,7 +236,7 @@ export default function FeedbackReportPage() {
             </View>
           </View>
         ) : null}
-      </View>
+      </NeoCard>
     </ScrollView>
   );
 }
@@ -254,7 +244,7 @@ export default function FeedbackReportPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   content: {
     padding: 16,
@@ -263,50 +253,50 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   secondaryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12
   },
   secondaryLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccdae8",
+    borderColor: neoColors.subtleBorder,
     padding: 12,
     gap: 8
   },
   sectionTitle: {
     fontWeight: "700",
-    color: "#2c4f6f"
+    color: neoColors.ink
   },
   input: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderWidth: 1,
-    borderColor: "#cfd8e3",
+    borderColor: neoColors.subtleBorder,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 10
   },
   primaryButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   listWrap: {
@@ -315,18 +305,18 @@ const styles = StyleSheet.create({
   },
   listRow: {
     borderWidth: 1,
-    borderColor: "#bfd0df",
+    borderColor: neoColors.subtleBorder,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
     gap: 4
   },
   listPrimary: {
-    color: "#243a56",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   listSecondary: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   reportSeparator: {
     height: 8
@@ -335,22 +325,22 @@ const styles = StyleSheet.create({
     gap: 6
   },
   detailPrimary: {
-    color: "#243a56",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   detailSecondary: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   block: {
     marginTop: 8,
     gap: 4
   },
   blockTitle: {
-    color: "#2c4f6f",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   blockItem: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   inlineLoadingRow: {
     flexDirection: "row",
@@ -359,48 +349,48 @@ const styles = StyleSheet.create({
   },
   staleBadge: {
     borderWidth: 1,
-    borderColor: "#f3c783",
+    borderColor: neoColors.warningBorder,
     borderRadius: 10,
-    backgroundColor: "#fff6e8",
+    backgroundColor: neoColors.warningSoft,
     paddingVertical: 6,
     paddingHorizontal: 8
   },
   staleBadgeLabel: {
-    color: "#9b4f00",
+    color: neoColors.warningText,
     fontWeight: "700"
   },
   inlineCtaButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 10,
     marginTop: 2
   },
   inlineCtaLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   warningText: {
-    color: "#9b4f00"
+    color: neoColors.warningText
   },
   emptyCard: {
     marginTop: 8,
     borderWidth: 1,
-    borderColor: "#d7e4ef",
+    borderColor: neoColors.subtleBorder,
     borderRadius: 10,
-    backgroundColor: "#f4f8fb",
+    backgroundColor: neoColors.white,
     padding: 10,
     gap: 4
   },
   emptyTitle: {
-    color: "#2c4f6f",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   emptyText: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   errorText: {
-    color: "#b00020"
+    color: neoColors.dangerText
   }
 });

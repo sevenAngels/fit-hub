@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useDailyMood, useSaveDailyMoodMutation, type MoodType } from "@/features/mood/queries";
 import { getMoodTodayDate } from "@/features/mood/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoCard, NeoInput } from "@/shared/ui/neo-primitives";
 
 function parseDecimal(value: string): number | null {
   const trimmed = value.trim();
@@ -89,13 +91,11 @@ export default function MoodPage() {
       <Text style={styles.title}>Daily Mood</Text>
       <Text style={styles.subtitle}>Save and re-save same-day mood with upsert behavior.</Text>
 
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/(protected)")}>
-        <Text style={styles.secondaryLabel}>Back to dashboard</Text>
-      </Pressable>
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.replace("/(protected)")} label="Back to dashboard" />
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Entry Date</Text>
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={recordDate}
           onChangeText={setRecordDate}
@@ -103,9 +103,9 @@ export default function MoodPage() {
           autoCapitalize="none"
           editable={!isBusy}
         />
-      </View>
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Mood Type</Text>
         <View style={styles.choiceWrap}>
           {moodOptions.map((option) => (
@@ -120,7 +120,7 @@ export default function MoodPage() {
           ))}
         </View>
 
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={stressLevelText}
           onChangeText={setStressLevelText}
@@ -129,7 +129,7 @@ export default function MoodPage() {
           editable={!isBusy}
         />
 
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={sleepHoursText}
           onChangeText={setSleepHoursText}
@@ -138,7 +138,7 @@ export default function MoodPage() {
           editable={!isBusy}
         />
 
-        <TextInput
+        <NeoInput
           style={[styles.input, styles.notesInput]}
           value={notes}
           onChangeText={setNotes}
@@ -147,18 +147,14 @@ export default function MoodPage() {
           editable={!isBusy}
         />
 
-        <Pressable style={styles.primaryButton} onPress={() => void submitMood()} disabled={isBusy}>
-          <Text style={styles.primaryLabel}>{saveMoodMutation.isPending ? "Saving..." : "Save mood"}</Text>
-        </Pressable>
-      </View>
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel} onPress={() => void submitMood()} disabled={isBusy} label={saveMoodMutation.isPending ? "Saving..." : "Save mood"} />
+      </NeoCard>
 
-      {moodQuery.isLoading ? <ActivityIndicator size="small" color="#2f6fa8" /> : null}
+      {moodQuery.isLoading ? <ActivityIndicator size="small" color={neoColors.primary} /> : null}
       {moodQuery.error ? (
         <View style={styles.errorCard}>
           <Text style={styles.errorText}>{moodQuery.error.message}</Text>
-          <Pressable style={styles.retryButton} onPress={() => void moodQuery.refetch()}>
-            <Text style={styles.retryLabel}>Retry load</Text>
-          </Pressable>
+          <NeoButton variant="danger" style={styles.retryButton} labelStyle={styles.retryLabel} onPress={() => void moodQuery.refetch()} label="Retry load" />
         </View>
       ) : null}
 
@@ -171,7 +167,7 @@ export default function MoodPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   content: {
     padding: 16,
@@ -180,38 +176,38 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   secondaryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12
   },
   secondaryLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccdae8",
+    borderColor: neoColors.subtleBorder,
     padding: 12,
     gap: 8
   },
   sectionTitle: {
     fontWeight: "700",
-    color: "#2c4f6f"
+    color: neoColors.ink
   },
   input: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderWidth: 1,
-    borderColor: "#cfd8e3",
+    borderColor: neoColors.subtleBorder,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 10
@@ -228,58 +224,58 @@ const styles = StyleSheet.create({
   choiceChip: {
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#91a5ba",
+    borderColor: neoColors.subtleBorder,
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: "#ffffff"
+    backgroundColor: neoColors.white
   },
   choiceChipActive: {
-    borderColor: "#2f6fa8",
-    backgroundColor: "#2f6fa8"
+    borderColor: neoColors.primary,
+    backgroundColor: neoColors.primary
   },
   choiceText: {
-    color: "#39536e",
+    color: neoColors.muted,
     fontWeight: "600"
   },
   choiceTextActive: {
-    color: "#ffffff"
+    color: neoColors.white
   },
   primaryButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   errorCard: {
     borderWidth: 1,
-    borderColor: "#f1b0ba",
+    borderColor: neoColors.dangerBorder,
     borderRadius: 10,
-    backgroundColor: "#fff2f4",
+    backgroundColor: neoColors.dangerPale,
     padding: 10,
     gap: 8
   },
   errorText: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   retryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#f4d3d8",
+    backgroundColor: neoColors.dangerSoft,
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 10
   },
   retryLabel: {
-    color: "#8b0015",
+    color: neoColors.dangerStrong,
     fontWeight: "700"
   },
   formError: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   formSuccess: {
-    color: "#276749"
+    color: neoColors.successText
   }
 });

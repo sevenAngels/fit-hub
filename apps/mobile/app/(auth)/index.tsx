@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { signInWithEmail, signUpWithEmail } from "@/features/auth/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoInput } from "@/shared/ui/neo-primitives";
 
 export default function AuthHomePage() {
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
@@ -47,7 +49,7 @@ export default function AuthHomePage() {
       <Text style={styles.title}>Fit Hub Mobile</Text>
       <Text style={styles.subtitle}>{mode === "sign-in" ? "Sign in to continue" : "Create your account"}</Text>
 
-      <TextInput
+      <NeoInput
         style={styles.input}
         value={email}
         onChangeText={setEmail}
@@ -55,7 +57,7 @@ export default function AuthHomePage() {
         placeholder="Email"
         autoCapitalize="none"
       />
-      <TextInput
+      <NeoInput
         style={styles.input}
         value={password}
         onChangeText={setPassword}
@@ -65,11 +67,14 @@ export default function AuthHomePage() {
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {message ? <Text style={styles.message}>{message}</Text> : null}
 
-      <Pressable style={styles.button} onPress={submitAuth} disabled={isSubmitting}>
-        <Text style={styles.buttonLabel}>
-          {isSubmitting ? "Submitting..." : mode === "sign-in" ? "Sign in" : "Sign up"}
-        </Text>
-      </Pressable>
+      <NeoButton
+        variant="primary"
+        style={styles.button}
+        labelStyle={styles.buttonLabel}
+        onPress={submitAuth}
+        disabled={isSubmitting}
+        label={isSubmitting ? "Submitting..." : mode === "sign-in" ? "Sign in" : "Sign up"}
+      />
 
       <Pressable onPress={() => setMode((current) => (current === "sign-in" ? "sign-up" : "sign-in"))}>
         <Text style={styles.link}>{mode === "sign-in" ? "Need an account? Sign up" : "Already have an account? Sign in"}</Text>
@@ -91,29 +96,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 24,
     gap: 12,
-    backgroundColor: "#f8f6f2"
+    backgroundColor: neoColors.background
   },
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#2f3a24"
+    color: neoColors.ink
   },
   subtitle: {
     fontSize: 16,
-    color: "#55624c"
+    color: neoColors.muted
   },
   input: {
     width: "100%",
     maxWidth: 360,
     padding: 12,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#d6d8dc",
-    backgroundColor: "#ffffff"
+    borderWidth: 2,
+    borderColor: neoColors.ink,
+    backgroundColor: neoColors.white
   },
   button: {
     marginTop: 16,
-    backgroundColor: "#3d6f39",
+    backgroundColor: neoColors.authPrimary,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18,
@@ -121,17 +126,17 @@ const styles = StyleSheet.create({
     minWidth: 180
   },
   buttonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "600"
   },
   error: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   message: {
-    color: "#276749",
+    color: neoColors.successText,
     textAlign: "center"
   },
   link: {
-    color: "#2f6fa8"
+    color: neoColors.primary
   }
 });

@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
 
 import { useAuth } from "@/features/auth/auth-provider";
 import { supabase } from "@/infrastructure/supabase/client";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoInput } from "@/shared/ui/neo-primitives";
 
 const ONBOARDING_DRAFT_KEY = "fit-hub-onboarding-draft";
 
@@ -152,7 +154,7 @@ export default function OnboardingPage() {
       <Text style={styles.subtitle}>{stepTitle}</Text>
 
       {step === 1 ? (
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={draft.nickname}
           onChangeText={(nickname) => setDraft((prev) => ({ ...prev, nickname }))}
@@ -162,14 +164,14 @@ export default function OnboardingPage() {
 
       {step === 2 ? (
         <>
-          <TextInput
+          <NeoInput
             style={styles.input}
             value={draft.heightCm}
             onChangeText={(heightCm) => setDraft((prev) => ({ ...prev, heightCm }))}
             placeholder="Height (cm)"
             keyboardType="numeric"
           />
-          <TextInput
+          <NeoInput
             style={styles.input}
             value={draft.currentWeightKg}
             onChangeText={(currentWeightKg) => setDraft((prev) => ({ ...prev, currentWeightKg }))}
@@ -180,7 +182,7 @@ export default function OnboardingPage() {
       ) : null}
 
       {step === 3 ? (
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={draft.mbti}
           onChangeText={(mbti) => setDraft((prev) => ({ ...prev, mbti: mbti.toUpperCase() }))}
@@ -194,23 +196,40 @@ export default function OnboardingPage() {
 
       <View style={styles.actions}>
         {step > 1 ? (
-          <Pressable style={styles.secondaryButton} onPress={() => setStep((prev) => (prev === 2 ? 1 : 2))}>
-            <Text style={styles.secondaryLabel}>Back</Text>
-          </Pressable>
+          <NeoButton
+            variant="secondary"
+            style={styles.secondaryButton}
+            labelStyle={styles.secondaryLabel}
+            onPress={() => setStep((prev) => (prev === 2 ? 1 : 2))}
+            label="Back"
+          />
         ) : (
-          <Pressable style={styles.secondaryButton} onPress={() => void signOut()}>
-            <Text style={styles.secondaryLabel}>Sign out</Text>
-          </Pressable>
+          <NeoButton
+            variant="secondary"
+            style={styles.secondaryButton}
+            labelStyle={styles.secondaryLabel}
+            onPress={() => void signOut()}
+            label="Sign out"
+          />
         )}
 
         {step < 3 ? (
-          <Pressable style={styles.primaryButton} onPress={goNext}>
-            <Text style={styles.primaryLabel}>Next</Text>
-          </Pressable>
+          <NeoButton
+            variant="primary"
+            style={styles.primaryButton}
+            labelStyle={styles.primaryLabel}
+            onPress={goNext}
+            label="Next"
+          />
         ) : (
-          <Pressable style={styles.primaryButton} onPress={submit} disabled={isSubmitting}>
-            <Text style={styles.primaryLabel}>{isSubmitting ? "Saving..." : "Complete"}</Text>
-          </Pressable>
+          <NeoButton
+            variant="primary"
+            style={styles.primaryButton}
+            labelStyle={styles.primaryLabel}
+            onPress={submit}
+            disabled={isSubmitting}
+            label={isSubmitting ? "Saving..." : "Complete"}
+          />
         )}
       </View>
     </View>
@@ -224,28 +243,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 24,
     gap: 12,
-    backgroundColor: "#f8f6f2"
+    backgroundColor: neoColors.background
   },
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#2f3a24"
+    color: neoColors.ink
   },
   subtitle: {
     fontSize: 16,
-    color: "#55624c"
+    color: neoColors.muted
   },
   input: {
     width: "100%",
     maxWidth: 360,
     padding: 12,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#d6d8dc",
-    backgroundColor: "#ffffff"
+    borderWidth: 2,
+    borderColor: neoColors.ink,
+    backgroundColor: neoColors.white
   },
   error: {
-    color: "#b00020",
+    color: neoColors.dangerText,
     textAlign: "center"
   },
   actions: {
@@ -256,7 +275,7 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   primaryButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18,
@@ -264,11 +283,11 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "600"
   },
   secondaryButton: {
-    backgroundColor: "#e6e9ed",
+    backgroundColor: neoColors.secondary,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18,
@@ -276,7 +295,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   secondaryLabel: {
-    color: "#2f3a24",
+    color: neoColors.ink,
     fontWeight: "600"
   }
 });

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useAuth } from "@/features/auth/auth-provider";
 import {
@@ -11,6 +11,8 @@ import {
   useDashboardStreak
 } from "@/features/dashboard/queries";
 import { getDashboardTodayDate } from "@/features/dashboard/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoCard } from "@/shared/ui/neo-primitives";
 
 type SummaryCardProps = {
   title: string;
@@ -22,12 +24,12 @@ type SummaryCardProps = {
 
 function SummaryCard({ title, isLoading, error, onRetry, children }: SummaryCardProps) {
   return (
-    <View style={styles.card}>
+    <NeoCard style={styles.card}>
       <Text style={styles.cardTitle}>{title}</Text>
 
       {isLoading ? (
         <View style={styles.cardStateRow}>
-          <ActivityIndicator size="small" color="#2f6fa8" />
+          <ActivityIndicator size="small" color={neoColors.primary} />
           <Text style={styles.cardStateText}>Loading...</Text>
         </View>
       ) : null}
@@ -35,14 +37,18 @@ function SummaryCard({ title, isLoading, error, onRetry, children }: SummaryCard
       {error ? (
         <View style={styles.cardStateWrap}>
           <Text style={styles.cardError}>Panel unavailable. {error.message}</Text>
-          <Pressable style={styles.retryButton} onPress={onRetry}>
-            <Text style={styles.retryButtonLabel}>Retry panel</Text>
-          </Pressable>
+          <NeoButton
+            variant="danger"
+            style={styles.retryButton}
+            labelStyle={styles.retryButtonLabel}
+            onPress={onRetry}
+            label="Retry panel"
+          />
         </View>
       ) : null}
 
       {!isLoading && !error ? children : null}
-    </View>
+    </NeoCard>
   );
 }
 
@@ -178,9 +184,7 @@ export default function ProtectedHomePage() {
             <Text style={styles.metricPrimary}>Reconnect required</Text>
             <Text style={styles.metricDetail}>Provider or permission is not ready yet.</Text>
             {health?.errorMessage ? <Text style={styles.warningText}>{health.errorMessage}</Text> : null}
-            <Pressable style={styles.inlineCtaButton} onPress={() => router.push("/(protected)/health")}>
-              <Text style={styles.inlineCtaLabel}>Reconnect health</Text>
-            </Pressable>
+            <NeoButton variant="secondary" style={styles.inlineCtaButton} labelStyle={styles.inlineCtaLabel} onPress={() => router.push("/(protected)/health")} label="Reconnect health" />
           </>
         ) : null}
 
@@ -198,9 +202,7 @@ export default function ProtectedHomePage() {
             {health.isRunning ? <Text style={styles.metricDetail}>Sync in progress...</Text> : null}
 
             {(health.stale || health.errorMessage) ? (
-              <Pressable style={styles.inlineCtaButton} onPress={() => router.push("/(protected)/health")}>
-                <Text style={styles.inlineCtaLabel}>Open health controls</Text>
-              </Pressable>
+              <NeoButton variant="secondary" style={styles.inlineCtaButton} labelStyle={styles.inlineCtaLabel} onPress={() => router.push("/(protected)/health")} label="Open health controls" />
             ) : null}
           </>
         ) : null}
@@ -224,9 +226,7 @@ export default function ProtectedHomePage() {
             <Text style={styles.metricPrimary}>Reconnect required</Text>
             <Text style={styles.metricDetail}>Provider or permission is not ready yet.</Text>
             {health?.errorMessage ? <Text style={styles.warningText}>{health.errorMessage}</Text> : null}
-            <Pressable style={styles.inlineCtaButton} onPress={() => router.push("/(protected)/health")}>
-              <Text style={styles.inlineCtaLabel}>Reconnect health</Text>
-            </Pressable>
+            <NeoButton variant="secondary" style={styles.inlineCtaButton} labelStyle={styles.inlineCtaLabel} onPress={() => router.push("/(protected)/health")} label="Reconnect health" />
           </>
         ) : null}
 
@@ -243,41 +243,21 @@ export default function ProtectedHomePage() {
             ) : null}
 
             {(health.stale || health.errorMessage) ? (
-              <Pressable style={styles.inlineCtaButton} onPress={() => router.push("/(protected)/health")}>
-                <Text style={styles.inlineCtaLabel}>Open health controls</Text>
-              </Pressable>
+              <NeoButton variant="secondary" style={styles.inlineCtaButton} labelStyle={styles.inlineCtaLabel} onPress={() => router.push("/(protected)/health")} label="Open health controls" />
             ) : null}
           </>
         ) : null}
       </SummaryCard>
 
-      <Pressable style={styles.uploadButton} onPress={() => router.push("/(protected)/record-upload")}>
-        <Text style={styles.uploadButtonLabel}>Open record upload</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.push("/(protected)/goals")}>
-        <Text style={styles.secondaryLabel}>Open goals & habits</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.push("/(protected)/mood")}>
-        <Text style={styles.secondaryLabel}>Open daily mood</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.push("/(protected)/profile")}>
-        <Text style={styles.secondaryLabel}>Open profile</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.push("/(protected)/subscription")}>
-        <Text style={styles.secondaryLabel}>Open subscription</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.push("/(protected)/health")}>
-        <Text style={styles.secondaryLabel}>Open health connect</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.push("/(protected)/report")}>
-        <Text style={styles.secondaryLabel}>Open weekly report</Text>
-      </Pressable>
-      <Pressable style={styles.secondaryButton} onPress={() => router.push("/(protected)/record-history")}>
-        <Text style={styles.secondaryLabel}>Open record history</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={() => void signOut()}>
-        <Text style={styles.buttonLabel}>Sign out</Text>
-      </Pressable>
+      <NeoButton variant="primary" style={styles.uploadButton} labelStyle={styles.uploadButtonLabel} onPress={() => router.push("/(protected)/record-upload")} label="Open record upload" />
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.push("/(protected)/goals")} label="Open goals & habits" />
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.push("/(protected)/mood")} label="Open daily mood" />
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.push("/(protected)/profile")} label="Open profile" />
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.push("/(protected)/subscription")} label="Open subscription" />
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.push("/(protected)/health")} label="Open health connect" />
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.push("/(protected)/report")} label="Open weekly report" />
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.push("/(protected)/record-history")} label="Open record history" />
+      <NeoButton variant="primary" style={styles.button} labelStyle={styles.buttonLabel} onPress={() => void signOut()} label="Sign out" />
     </ScrollView>
   );
 }
@@ -285,7 +265,7 @@ export default function ProtectedHomePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   content: {
     padding: 20,
@@ -294,32 +274,32 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
     fontSize: 16,
-    color: "#4b6381"
+    color: neoColors.mutedStrong
   },
   note: {
-    color: "#4f5f76",
+    color: neoColors.muted,
     marginBottom: 4
   },
   legacyLabel: {
     fontSize: 12,
-    color: "#7a8ca0"
+    color: neoColors.mutedStrong
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccdae8",
+    borderColor: neoColors.subtleBorder,
     padding: 12,
     gap: 6
   },
   cardTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   cardStateWrap: {
     gap: 8
@@ -330,90 +310,90 @@ const styles = StyleSheet.create({
     gap: 8
   },
   cardStateText: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   cardError: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   retryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#f4d3d8",
+    backgroundColor: neoColors.dangerSoft,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 10
   },
   retryButtonLabel: {
-    color: "#8b0015",
+    color: neoColors.dangerStrong,
     fontWeight: "700"
   },
   metricPrimary: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#23486a"
+    color: neoColors.ink
   },
   metricDetail: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   error: {
-    color: "#b00020",
+    color: neoColors.dangerText,
     marginBottom: 4
   },
   button: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18
   },
   buttonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "600"
   },
   uploadButton: {
     marginTop: 16,
-    backgroundColor: "#375f86",
+    backgroundColor: neoColors.primaryStrong,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18
   },
   uploadButtonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "600"
   },
   secondaryButton: {
-    backgroundColor: "#7ca9d1",
+    backgroundColor: neoColors.secondary,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18
   },
   secondaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "600"
   },
   staleBadge: {
     borderWidth: 1,
-    borderColor: "#f3c783",
+    borderColor: neoColors.warningBorder,
     borderRadius: 10,
-    backgroundColor: "#fff6e8",
+    backgroundColor: neoColors.warningSoft,
     paddingVertical: 6,
     paddingHorizontal: 8
   },
   staleBadgeLabel: {
-    color: "#9b4f00",
+    color: neoColors.warningText,
     fontWeight: "700"
   },
   inlineCtaButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 10,
     marginTop: 2
   },
   inlineCtaLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   warningText: {
-    color: "#9b4f00"
+    color: neoColors.warningText
   }
 });

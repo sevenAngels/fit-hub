@@ -35,5 +35,9 @@
     "test:health:sync-idempotency:dry-run": "node scripts/health-sync-idempotency-check.mjs --dry-run",
     "check:legacy-types": "node scripts/check-legacy-type-imports.mjs",
     "check:task3-matrix": "node scripts/check-task3-matrix-coverage.mjs"
+  },
+  "devDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }

@@ -3,7 +3,8 @@ import * as SecureStore from "expo-secure-store";
 const SECURE_STORE_PREFIX = "fit-hub-auth";
 
 function withPrefix(key: string): string {
-  return `${SECURE_STORE_PREFIX}:${key}`;
+  const normalizedKey = key.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return `${SECURE_STORE_PREFIX}.${normalizedKey}`;
 }
 
 export const secureStoreAuthStorage = {

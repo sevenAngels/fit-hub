@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { applySessionFromDeepLink } from "@/features/auth/service";
+import { neoColors } from "@/shared/ui/neo-theme";
 
 function isAuthCallbackUrl(url: string | null) {
   if (!url) {
@@ -76,11 +77,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
-    backgroundColor: "#f8f6f2"
+    backgroundColor: neoColors.background
   },
   message: {
     marginTop: 16,
-    color: "#243a56",
+    color: neoColors.ink,
     textAlign: "center"
   }
 });

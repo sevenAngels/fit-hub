@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { useAuth } from "@/features/auth/auth-provider";
 import { updatePassword } from "@/features/auth/service";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoInput } from "@/shared/ui/neo-primitives";
 
 export default function ResetPasswordPage() {
   const { session } = useAuth();
@@ -45,14 +47,14 @@ export default function ResetPasswordPage() {
     <View style={styles.container}>
       <Text style={styles.title}>Set a new password</Text>
 
-      <TextInput
+      <NeoInput
         style={styles.input}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         placeholder="New password"
       />
-      <TextInput
+      <NeoInput
         style={styles.input}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
@@ -63,9 +65,14 @@ export default function ResetPasswordPage() {
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {message ? <Text style={styles.message}>{message}</Text> : null}
 
-      <Pressable style={styles.button} onPress={submitPassword} disabled={isSubmitting}>
-        <Text style={styles.buttonLabel}>{isSubmitting ? "Updating..." : "Update password"}</Text>
-      </Pressable>
+      <NeoButton
+        variant="primary"
+        style={styles.button}
+        labelStyle={styles.buttonLabel}
+        onPress={submitPassword}
+        disabled={isSubmitting}
+        label={isSubmitting ? "Updating..." : "Update password"}
+      />
     </View>
   );
 }
@@ -77,25 +84,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 24,
     gap: 12,
-    backgroundColor: "#f8f6f2"
+    backgroundColor: neoColors.background
   },
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#2f3a24"
+    color: neoColors.ink
   },
   input: {
     width: "100%",
     maxWidth: 360,
     padding: 12,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#d6d8dc",
-    backgroundColor: "#ffffff"
+    borderWidth: 2,
+    borderColor: neoColors.ink,
+    backgroundColor: neoColors.white
   },
   button: {
     marginTop: 16,
-    backgroundColor: "#276749",
+    backgroundColor: neoColors.successText,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 18,
@@ -103,13 +110,13 @@ const styles = StyleSheet.create({
     minWidth: 180
   },
   buttonLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "600"
   },
   error: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   message: {
-    color: "#276749"
+    color: neoColors.successText
   }
 });

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
 import * as Linking from "expo-linking";
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useAuth } from "@/features/auth/auth-provider";
 import {
@@ -11,6 +11,8 @@ import {
   useUserProfile
 } from "@/features/profile/queries";
 import { useCreateCheckoutSessionMutation, useSubscriptionStatus } from "@/features/subscription/queries";
+import { neoColors } from "@/shared/ui/neo-theme";
+import { NeoButton, NeoCard, NeoInput } from "@/shared/ui/neo-primitives";
 
 const MBTI_VALUES = [
   "", "INTJ", "INTP", "ENTJ", "ENTP",
@@ -121,21 +123,17 @@ export default function ProfilePage() {
       <Text style={styles.title}>Profile</Text>
       <Text style={styles.subtitle}>Edit profile and manage account.</Text>
 
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/(protected)")}>
-        <Text style={styles.secondaryLabel}>Back to dashboard</Text>
-      </Pressable>
+      <NeoButton variant="secondary" style={styles.secondaryButton} labelStyle={styles.secondaryLabel} onPress={() => router.replace("/(protected)")} label="Back to dashboard" />
 
-      {profileQuery.isLoading ? <ActivityIndicator size="small" color="#2f6fa8" /> : null}
+      {profileQuery.isLoading ? <ActivityIndicator size="small" color={neoColors.primary} /> : null}
       {profileQuery.error ? (
         <View style={styles.errorCard}>
           <Text style={styles.errorText}>{profileQuery.error.message}</Text>
-          <Pressable style={styles.retryButton} onPress={() => void profileQuery.refetch()}>
-            <Text style={styles.retryLabel}>Retry load</Text>
-          </Pressable>
+          <NeoButton variant="danger" style={styles.retryButton} labelStyle={styles.retryLabel} onPress={() => void profileQuery.refetch()} label="Retry load" />
         </View>
       ) : null}
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Subscription</Text>
         <View style={styles.subscriptionRow}>
           <Text style={styles.subscriptionLabel}>Status</Text>
@@ -147,20 +145,16 @@ export default function ProfilePage() {
         <Text style={styles.subscriptionText}>Plan: {planName}</Text>
         <Text style={styles.subscriptionText}>Renews: {renewalDate}</Text>
 
-        {subscriptionQuery.isLoading ? <ActivityIndicator size="small" color="#2f6fa8" /> : null}
+        {subscriptionQuery.isLoading ? <ActivityIndicator size="small" color={neoColors.primary} /> : null}
         {subscriptionQuery.error ? <Text style={styles.subscriptionError}>{subscriptionQuery.error.message}</Text> : null}
 
-        <Pressable style={styles.primaryButton} onPress={() => void startCheckout()} disabled={isBusy}>
-          <Text style={styles.primaryLabel}>
-            {checkoutMutation.isPending ? "Opening checkout..." : subscriptionStatus?.isActive ? "Manage subscription" : "Upgrade subscription"}
-          </Text>
-        </Pressable>
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel} onPress={() => void startCheckout()} disabled={isBusy} label={checkoutMutation.isPending ? "Opening checkout..." : subscriptionStatus?.isActive ? "Manage subscription" : "Upgrade subscription"} />
 
         <Text style={styles.hintText}>Subscription checkout uses web flow for this MVP.</Text>
         {billingMessage ? <Text style={styles.billingMessage}>{billingMessage}</Text> : null}
-      </View>
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Avatar</Text>
 
         <View style={styles.avatarWrap}>
@@ -173,17 +167,15 @@ export default function ProfilePage() {
           )}
         </View>
 
-        <Pressable style={styles.primaryButton} onPress={() => void uploadAvatar()} disabled={isBusy}>
-          <Text style={styles.primaryLabel}>{uploadAvatarMutation.isPending ? "Uploading..." : "Upload avatar"}</Text>
-        </Pressable>
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel} onPress={() => void uploadAvatar()} disabled={isBusy} label={uploadAvatarMutation.isPending ? "Uploading..." : "Upload avatar"} />
         <Text style={styles.hintText}>Supported: JPG, PNG, WebP, GIF, HEIC, HEIF (max 10MB)</Text>
-      </View>
+      </NeoCard>
 
-      <View style={styles.card}>
+      <NeoCard style={styles.card}>
         <Text style={styles.sectionTitle}>Profile Info</Text>
 
         <Text style={styles.fieldLabel}>Nickname</Text>
-        <TextInput
+        <NeoInput
           style={styles.input}
           value={nickname}
           onChangeText={setNickname}
@@ -193,7 +185,7 @@ export default function ProfilePage() {
         />
 
         <Text style={styles.fieldLabel}>Email</Text>
-        <TextInput style={[styles.input, styles.disabledInput]} value={email} editable={false} />
+        <NeoInput style={[styles.input, styles.disabledInput]} value={email} editable={false} />
 
         <Text style={styles.fieldLabel}>MBTI</Text>
         <View style={styles.chipWrap}>
@@ -209,10 +201,8 @@ export default function ProfilePage() {
           ))}
         </View>
 
-        <Pressable style={styles.primaryButton} onPress={() => void submitProfile()} disabled={isBusy}>
-          <Text style={styles.primaryLabel}>{updateProfileMutation.isPending ? "Saving..." : "Save profile"}</Text>
-        </Pressable>
-      </View>
+        <NeoButton variant="primary" style={styles.primaryButton} labelStyle={styles.primaryLabel} onPress={() => void submitProfile()} disabled={isBusy} label={updateProfileMutation.isPending ? "Saving..." : "Save profile"} />
+      </NeoCard>
 
       {formError ? <Text style={styles.formError}>{formError}</Text> : null}
       {formSuccess ? <Text style={styles.formSuccess}>{formSuccess}</Text> : null}
@@ -223,7 +213,7 @@ export default function ProfilePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef4f8"
+    backgroundColor: neoColors.background
   },
   content: {
     padding: 16,
@@ -232,33 +222,33 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#243a56"
+    color: neoColors.ink
   },
   subtitle: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   secondaryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#d9e7f3",
+    backgroundColor: neoColors.secondary,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12
   },
   secondaryLabel: {
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccdae8",
+    borderColor: neoColors.subtleBorder,
     padding: 12,
     gap: 8
   },
   sectionTitle: {
     fontWeight: "700",
-    color: "#2c4f6f"
+    color: neoColors.ink
   },
   subscriptionRow: {
     flexDirection: "row",
@@ -266,7 +256,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   subscriptionLabel: {
-    color: "#4f5f76",
+    color: neoColors.muted,
     fontWeight: "600"
   },
   subscriptionBadge: {
@@ -279,23 +269,23 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   subscriptionActive: {
-    borderColor: "#2e7d32",
-    backgroundColor: "#e8f5e9",
-    color: "#1e6b2d"
+    borderColor: neoColors.successBorder,
+    backgroundColor: neoColors.successSoft,
+    color: neoColors.successStrong
   },
   subscriptionInactive: {
-    borderColor: "#b00020",
-    backgroundColor: "#ffebee",
-    color: "#8b0015"
+    borderColor: neoColors.dangerText,
+    backgroundColor: neoColors.dangerPaler,
+    color: neoColors.dangerStrong
   },
   subscriptionText: {
-    color: "#4f5f76"
+    color: neoColors.muted
   },
   subscriptionError: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   billingMessage: {
-    color: "#8b0015"
+    color: neoColors.dangerStrong
   },
   avatarWrap: {
     alignItems: "center",
@@ -306,33 +296,33 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     borderWidth: 1,
-    borderColor: "#cfd8e3"
+    borderColor: neoColors.subtleBorder
   },
   avatarFallback: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#d9e7f3"
+    backgroundColor: neoColors.secondary
   },
   avatarFallbackText: {
     fontSize: 32,
-    color: "#23486a",
+    color: neoColors.ink,
     fontWeight: "700"
   },
   fieldLabel: {
-    color: "#4f5f76",
+    color: neoColors.muted,
     fontWeight: "600"
   },
   input: {
-    backgroundColor: "#ffffff",
+    backgroundColor: neoColors.white,
     borderWidth: 1,
-    borderColor: "#cfd8e3",
+    borderColor: neoColors.subtleBorder,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 10
   },
   disabledInput: {
-    color: "#6f8092",
-    backgroundColor: "#edf2f7"
+    color: neoColors.mutedStrong,
+    backgroundColor: neoColors.secondary
   },
   chipWrap: {
     flexDirection: "row",
@@ -342,62 +332,62 @@ const styles = StyleSheet.create({
   chip: {
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#91a5ba",
+    borderColor: neoColors.subtleBorder,
     paddingVertical: 6,
     paddingHorizontal: 10,
-    backgroundColor: "#ffffff"
+    backgroundColor: neoColors.white
   },
   chipActive: {
-    borderColor: "#2f6fa8",
-    backgroundColor: "#2f6fa8"
+    borderColor: neoColors.primary,
+    backgroundColor: neoColors.primary
   },
   chipText: {
-    color: "#39536e",
+    color: neoColors.muted,
     fontWeight: "600"
   },
   chipTextActive: {
-    color: "#ffffff"
+    color: neoColors.white
   },
   primaryButton: {
-    backgroundColor: "#2f6fa8",
+    backgroundColor: neoColors.primary,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center"
   },
   primaryLabel: {
-    color: "#ffffff",
+    color: neoColors.white,
     fontWeight: "700"
   },
   hintText: {
-    color: "#4f5f76",
+    color: neoColors.muted,
     fontSize: 12
   },
   errorCard: {
     borderWidth: 1,
-    borderColor: "#f1b0ba",
+    borderColor: neoColors.dangerBorder,
     borderRadius: 10,
-    backgroundColor: "#fff2f4",
+    backgroundColor: neoColors.dangerPale,
     padding: 10,
     gap: 8
   },
   errorText: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   retryButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#f4d3d8",
+    backgroundColor: neoColors.dangerSoft,
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 10
   },
   retryLabel: {
-    color: "#8b0015",
+    color: neoColors.dangerStrong,
     fontWeight: "700"
   },
   formError: {
-    color: "#b00020"
+    color: neoColors.dangerText
   },
   formSuccess: {
-    color: "#276749"
+    color: neoColors.successText
   }
 });
